@@ -346,27 +346,26 @@ type DataObject = {
 
 type DataArray = DataObject[];
 
+export const numberWithCommas = (x: string) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
 const Carousel = () => {
   const { currency } = useContext(CryptoContext);
-  const [data, setData] = useState<DataArray>(temp);
+  const [data, setData] = useState<DataArray>([]);
   const fetchTrendingCoins = async () => {
     try {
       const { data } = await axios.get(TrendingCoins(currency));
       setData(data);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(data);
+  // console.log(data);
 
-  // useEffect(() => {
-  //   // fetchTrendingCoins();
-  // }, []);
-
-  const numberWithCommas = (x: string) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
+  useEffect(() => {
+    fetchTrendingCoins();
+  }, [currency]);
 
   const { symbol } = useContext(CryptoContext);
   return (
