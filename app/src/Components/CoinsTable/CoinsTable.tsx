@@ -3,6 +3,7 @@ import { CryptoContext } from "../../Context/CryptoContext";
 import axios from "axios";
 import { CoinList } from "../../Config/api";
 import { numberWithCommas } from "../Banner/Carousel";
+import Pagination from "./Pagination";
 
 const temp: CoinObjectArray = [
   {
@@ -3028,13 +3029,13 @@ type CoinOnject = {
   total_volume: number;
 };
 
-type CoinObjectArray = CoinOnject[];
+export type CoinObjectArray = CoinOnject[];
 
 const CoinsTable = () => {
   const [coins, setCoins] = useState<CoinObjectArray>(temp);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
-
+  const [page, setPage] = useState(1);
   const { currency, symbol } = useContext(CryptoContext);
 
   const fetchCoins = async () => {
@@ -3069,7 +3070,7 @@ const CoinsTable = () => {
     );
 
   return (
-    <div className=" mt-5 flex flex-col items-center justify-center gap-5">
+    <div className=" mt-5 flex flex-col items-center justify-center gap-5 pb-16">
       <h1 className=" text-4xl font-light">
         Cryptocurrency Prices by Market Cap
       </h1>
@@ -3083,8 +3084,7 @@ const CoinsTable = () => {
           required
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          pattern=".{3,}"
-          className="  peer peer absolute z-10 block  w-[90%] appearance-none rounded-xl border-2  border-gray-300 bg-transparent  px-2 py-3.5 text-sm text-slate-900 focus:border-black focus:outline-none focus:ring-0 md:w-full dark:text-slate-100 dark:focus:border-white invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
+          className="  peer peer absolute z-10 block  w-[90%] appearance-none rounded-xl border-2  border-gray-300 bg-transparent  px-2 py-3.5 text-sm text-slate-900 focus:border-black focus:outline-none focus:ring-0 md:w-full dark:text-slate-100 dark:focus:border-white "
         />
         <label
           htmlFor="name"
@@ -3092,13 +3092,10 @@ const CoinsTable = () => {
         >
           Search . . .
         </label>
-        <span className=" absolute -top-2 left-3 z-30 hidden bg-white text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block dark:bg-slate-950">
-          Please enter at least 3 characters
-        </span>
       </div>
 
       {/* Table */}
-      <div className=" min-h-[60vh] w-[80vw]">
+      <div className=" mb-8 min-h-[60vh] w-[80vw]">
         <table className="w-full text-left text-sm text-gray-500  rtl:text-right  dark:text-gray-400">
           {/* Header */}
           <thead className=" bg-yellow-400 text-lg   uppercase text-gray-900 ">
@@ -3120,54 +3117,59 @@ const CoinsTable = () => {
 
           {/* Body */}
           <tbody>
-            {handleSearch().map((coin) => {
-              const percentChngColor: string =
-                coin.price_change_percentage_24h > 0 ? "green" : "red";
-              return (
-                <tr
-                  key={coin.id}
-                  className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
-                >
-                  <th
-                    scope="row"
-                    className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+            {handleSearch()
+              .slice((page - 1) * 10, (page - 1) * 10 + 10)
+              .map((coin) => {
+                const percentChngColor: string =
+                  coin.price_change_percentage_24h > 0 ? "green" : "red";
+                return (
+                  <tr
+                    key={coin.id}
+                    className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
                   >
-                    <div className=" flex items-center gap-4">
-                      <img
-                        src={coin.image}
-                        alt={coin.name}
-                        height={60}
-                        width={60}
-                      />
-                      <p className=" flex flex-col">
-                        <span className=" text-lg tracking-wider">
-                          {coin.symbol.toUpperCase()}
-                        </span>
-                        <span className=" text-gray-400">{coin.name}</span>
-                      </p>
-                    </div>
-                  </th>
-                  <td className=" px-6 py-4 text-base text-gray-200">
-                    {symbol} {numberWithCommas(coin.current_price.toString())}
-                  </td>
-                  <td
-                    className={`px-6 py-4 text-base ${
-                      percentChngColor === "green"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {coin.price_change_percentage_24h} %
-                  </td>
-                  <td className="px-6 py-4 text-base text-gray-200">
-                    {symbol} {numberWithCommas(coin.market_cap.toString())}
-                  </td>
-                </tr>
-              );
-            })}
+                    <th
+                      scope="row"
+                      className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                    >
+                      <div className=" flex items-center gap-4">
+                        <img
+                          src={coin.image}
+                          alt={coin.name}
+                          height={60}
+                          width={60}
+                        />
+                        <p className=" flex flex-col">
+                          <span className=" text-lg tracking-wider">
+                            {coin.symbol.toUpperCase()}
+                          </span>
+                          <span className=" text-gray-400">{coin.name}</span>
+                        </p>
+                      </div>
+                    </th>
+                    <td className=" px-6 py-4 text-base text-gray-200">
+                      {symbol} {numberWithCommas(coin.current_price.toString())}
+                    </td>
+                    <td
+                      className={`px-6 py-4 text-base ${
+                        percentChngColor === "green"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {coin.price_change_percentage_24h} %
+                    </td>
+                    <td className="px-6 py-4 text-base text-gray-200">
+                      {symbol} {numberWithCommas(coin.market_cap.toString())}
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      <Pagination page={page} search={search} coins={coins} setPage={setPage} />
     </div>
   );
 };
