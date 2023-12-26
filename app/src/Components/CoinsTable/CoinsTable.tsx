@@ -3033,7 +3033,7 @@ type CoinOnject = {
 export type CoinObjectArray = CoinOnject[];
 
 const CoinsTable = () => {
-  const [coins, setCoins] = useState<CoinObjectArray>(temp);
+  const [coins, setCoins] = useState<CoinObjectArray>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -3046,7 +3046,6 @@ const CoinsTable = () => {
     try {
       const { data } = await axios.get(CoinList(currency));
       setCoins(data);
-      console.log(data);
     } catch (error) {
       setError(true);
       console.log(error);
@@ -3062,10 +3061,11 @@ const CoinsTable = () => {
     );
   };
 
-  // useEffect(() => {
-  //   fetchCoins();
-  // }, [currency]);
-  console.log(page);
+  useEffect(() => {
+    fetchCoins();
+  }, [currency]);
+  // console.log(page);
+
   if (loading)
     return (
       <div className=" mt-10  flex items-center justify-center">

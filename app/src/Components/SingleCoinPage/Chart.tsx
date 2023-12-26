@@ -422,7 +422,7 @@ const ChartComponent = ({ coin }: Props) => {
           HistoricalChart(coin.id, days, currency),
         );
         setHistoricaldata(data);
-        console.log(historicaldata);
+        // console.log(historicaldata);
       }
     } catch (error) {
       console.log(error);
