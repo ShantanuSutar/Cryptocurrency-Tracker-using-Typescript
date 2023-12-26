@@ -4,6 +4,7 @@ import axios from "axios";
 import { CoinList } from "../../Config/api";
 import { numberWithCommas } from "../Banner/Carousel";
 import Pagination from "./Pagination";
+import { useNavigate } from "react-router-dom";
 
 const temp: CoinObjectArray = [
   {
@@ -3032,19 +3033,22 @@ type CoinOnject = {
 export type CoinObjectArray = CoinOnject[];
 
 const CoinsTable = () => {
-  const [coins, setCoins] = useState<CoinObjectArray>(temp);
+  const [coins, setCoins] = useState<CoinObjectArray>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [error, setError] = useState(false);
   const { currency, symbol } = useContext(CryptoContext);
-
+  const navigate = useNavigate();
   const fetchCoins = async () => {
+    setError(false);
     setLoading(true);
     try {
       const { data } = await axios.get(CoinList(currency));
       setCoins(data);
       console.log(data);
     } catch (error) {
+      setError(true);
       console.log(error);
     }
     setLoading(false);
@@ -3058,14 +3062,24 @@ const CoinsTable = () => {
     );
   };
 
-  // useEffect(() => {
-  //   fetchCoins();
-  // }, [currency]);
+  useEffect(() => {
+    fetchCoins();
+  }, [currency]);
 
   if (loading)
     return (
       <div className=" mt-10  flex items-center justify-center">
         <h1 className=" text-4xl">Loading . . .</h1>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className=" mt-10  flex items-center justify-center">
+        <h1 className=" text-xl">
+          Sorry ! There was an error fetching the data. Try reloading the site
+          or come back later :)
+        </h1>
       </div>
     );
 
@@ -3124,8 +3138,9 @@ const CoinsTable = () => {
                   coin.price_change_percentage_24h > 0 ? "green" : "red";
                 return (
                   <tr
+                    onClick={() => navigate(`/coins/${coin.id}`)}
                     key={coin.id}
-                    className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
+                    className=" cursor-pointer border-b bg-white transition-all duration-100 ease-in-out hover:bg-gray-700 dark:border-gray-700 dark:bg-gray-800"
                   >
                     <th
                       scope="row"

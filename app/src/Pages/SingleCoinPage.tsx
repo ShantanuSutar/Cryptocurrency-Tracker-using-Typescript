@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { SingleCoin } from "../Config/api";
-import Chart from "../Components/SingleCoinPage/Chart";
 import Description from "../Components/SingleCoinPage/Description";
+import ChartComponent from "../Components/SingleCoinPage/Chart";
 
 const temp: CoinObj = {
   id: "bitcoin",
@@ -37,7 +37,7 @@ export type CoinObj = {
     en: string;
   };
   image: {
-    large: string;
+    large: string | undefined;
   };
   market_cap_rank: number;
   market_data: {
@@ -55,9 +55,11 @@ export type CoinObj = {
 const SingleCoinPage: React.FC = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  const [coin, setCoin] = useState<CoinObj>(temp);
+  const [coin, setCoin] = useState<CoinObj>({} as CoinObj);
   const fetchCoinInfo = async () => {
+    setError(false);
     setLoading(true);
     try {
       if (id) {
@@ -66,14 +68,15 @@ const SingleCoinPage: React.FC = () => {
         console.log(coin);
       }
     } catch (error) {
+      setError(true);
       console.log(error);
     }
     setLoading(false);
   };
 
-  // useEffect(() => {
-  //   fetchCoinInfo();
-  // }, []);
+  useEffect(() => {
+    fetchCoinInfo();
+  }, []);
 
   if (loading)
     return (
@@ -82,10 +85,20 @@ const SingleCoinPage: React.FC = () => {
       </div>
     );
 
+  if (error)
+    return (
+      <div className=" mt-10  flex items-center justify-center">
+        <h1 className=" text-xl">
+          Sorry ! There was an error fetching the data. Try reloading the site
+          or come back later :)
+        </h1>
+      </div>
+    );
+
   return (
     <div className=" mt-8 flex">
       <Description coin={coin} />
-      <Chart />
+      <ChartComponent coin={coin} />
     </div>
   );
 };

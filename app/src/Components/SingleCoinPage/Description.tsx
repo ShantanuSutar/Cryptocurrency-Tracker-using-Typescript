@@ -8,7 +8,7 @@ type Props = {
 
 function getFirstSentence(paragraph: string) {
   // Use a regular expression to match the first sentence
-  var match = paragraph.match(/^.*?[.!?](?:\s|$)/);
+  var match = paragraph?.match(/^.*?[.!?](?:\s|$)/);
 
   // If a match is found, return the first sentence; otherwise, return the entire paragraph
   return match ? match[0].trim() : paragraph;
@@ -23,13 +23,13 @@ const Description = ({ coin }: Props) => {
         className=" mx-auto"
         height={160}
         width={160}
-        src={coin.image.large}
+        src={coin?.image?.large}
         alt=""
       />
       <h1 className=" mx-auto mt-4 text-4xl font-bold text-white">
         {coin.name}
       </h1>
-      <p className="word-spacing">{getFirstSentence(coin.description.en)}</p>
+      <p className="word-spacing">{getFirstSentence(coin?.description?.en)}</p>
       <div className="  flex flex-col gap-5 text-xl">
         <span className=" flex  items-baseline gap-5">
           <span className=" text-2xl font-bold text-white">Rank:</span>{" "}
@@ -41,8 +41,16 @@ const Description = ({ coin }: Props) => {
           {"     "}
 
           {currency === "INR"
-            ? numberWithCommas(coin.market_data.current_price.inr.toString())
-            : numberWithCommas(coin.market_data.current_price.usd.toString())}
+            ? coin?.market_data?.current_price?.inr
+              ? numberWithCommas(
+                  coin?.market_data?.current_price?.inr?.toString(),
+                )
+              : ""
+            : coin.market_data.current_price.usd
+              ? numberWithCommas(
+                  coin?.market_data?.current_price?.usd?.toString(),
+                )
+              : ""}
           {}
         </span>
         <span className=" flex  items-baseline gap-5">
@@ -50,8 +58,12 @@ const Description = ({ coin }: Props) => {
           {symbol}
           {"     "}
           {currency === "INR"
-            ? numberWithCommas(coin.market_data.market_cap.inr.toString())
-            : numberWithCommas(coin.market_data.market_cap.usd.toString())}
+            ? coin?.market_data?.market_cap?.inr
+              ? numberWithCommas(coin?.market_data?.market_cap?.inr?.toString())
+              : ""
+            : coin?.market_data?.market_cap?.usd
+              ? numberWithCommas(coin?.market_data?.market_cap?.usd?.toString())
+              : ""}
         </span>
       </div>
     </div>

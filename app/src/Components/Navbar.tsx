@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
         Cryto <span className=" text-yellow-400 ">Assasin</span>
       </h1>
       <select
-        className=" cursor-pointer rounded-tl-md rounded-tr-md bg-gray-500 p-1 text-white  focus:outline-gray-400"
+        className=" cursor-pointer rounded-tl-md rounded-tr-md bg-gray-500 p-1 px-3  text-white focus:outline-gray-400"
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
           setCurrency(e.target.value as "INR" | "USD")
         }
