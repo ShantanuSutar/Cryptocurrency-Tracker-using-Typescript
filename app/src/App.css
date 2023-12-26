@@ -56,3 +56,9 @@
   min-width: none;
   min-width: 250px;
 }
+
+/* Word Spacing */
+
+.word-spacing {
+  word-spacing: 0.5rem; /* Adjust the value as needed */
+}

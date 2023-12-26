@@ -2,9 +2,9 @@ import "./App.css";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Home from "./Pages/HomePage";
 import Navbar from "./Components/Navbar";
-import SinglePage from "./Pages/SinglePage";
 import React from "react";
 import { CryptoProvider } from "./Context/CryptoContext";
+import SingleCoinPage from "./Pages/SingleCoinPage";
 
 const Layout: React.FC = () => {
   return (
@@ -25,8 +25,8 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/coin/:id",
-        element: <SinglePage />,
+        path: "/coins/:id",
+        element: <SingleCoinPage />,
       },
     ],
   },
