@@ -3033,7 +3033,7 @@ type CoinOnject = {
 export type CoinObjectArray = CoinOnject[];
 
 const CoinsTable = () => {
-  const [coins, setCoins] = useState<CoinObjectArray>([]);
+  const [coins, setCoins] = useState<CoinObjectArray>(temp);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -3062,10 +3062,10 @@ const CoinsTable = () => {
     );
   };
 
-  useEffect(() => {
-    fetchCoins();
-  }, [currency]);
-
+  // useEffect(() => {
+  //   fetchCoins();
+  // }, [currency]);
+  console.log(page);
   if (loading)
     return (
       <div className=" mt-10  flex items-center justify-center">
@@ -3097,7 +3097,9 @@ const CoinsTable = () => {
           id="name"
           required
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
           className="  peer peer absolute z-10 block  w-[90%] appearance-none rounded-xl border-2  border-gray-300 bg-transparent  px-2 py-3.5 text-sm text-slate-900 focus:border-black focus:outline-none focus:ring-0 md:w-full dark:text-slate-100 dark:focus:border-white "
         />
         <label
