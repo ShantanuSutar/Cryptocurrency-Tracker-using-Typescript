@@ -513,11 +513,15 @@ const News = () => {
 
   useEffect(() => {
     fetchLatestNews();
-    // Pagination
+  }, []);
+
+  // Pagination
+  useEffect(() => {
     const total = parseInt((news.length / 10).toFixed(0));
     setTotalPages(total);
     if (total > 0) setPage(1);
-  }, []);
+  }, [news]);
+
   const pageNumArr: number[] = [];
 
   for (let i: number = 1; i <= totalPages; i++) {
