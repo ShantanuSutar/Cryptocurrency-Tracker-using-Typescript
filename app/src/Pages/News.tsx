@@ -513,7 +513,9 @@ const News = () => {
 
   useEffect(() => {
     fetchLatestNews();
+    // Pagination
     const total = parseInt((news.length / 10).toFixed(0));
+    setTotalPages(total);
     if (total > 0) setPage(1);
   }, []);
   const pageNumArr: number[] = [];
@@ -521,7 +523,6 @@ const News = () => {
   for (let i: number = 1; i <= totalPages; i++) {
     pageNumArr.push(i);
   }
-  // Pagination
 
   if (loading)
     return (
