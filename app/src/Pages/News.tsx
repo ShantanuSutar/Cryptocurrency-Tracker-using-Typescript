@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { TrendingNews } from "../Config/api";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
 import Tilt from "react-parallax-tilt";
+import PaginationComponent from "../Components/PaginationComponent";
 
 type News = {
   id: string;
@@ -14,7 +15,7 @@ type News = {
   tags: string;
 };
 
-type NewsArray = News[];
+export type NewsArray = News[];
 
 const temp: NewsArray = [
   {
@@ -491,17 +492,18 @@ const temp: NewsArray = [
 ];
 
 const News = () => {
-  const [news, setNews] = useState(temp);
+  const [news, setNews] = useState<NewsArray>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const fetchLatestNews = async () => {
     setError(false);
     setLoading(true);
     try {
       const { data } = await axios.get(TrendingNews());
-      setNews(data);
-      console.log(news);
+      setNews(data?.Data);
+      // console.log(news);
     } catch (error) {
       setError(true);
       console.log(error);
@@ -509,9 +511,17 @@ const News = () => {
     setLoading(false);
   };
 
-  // useEffect(() => {
-  //   fetchLatestNews();
-  // }, []);
+  useEffect(() => {
+    fetchLatestNews();
+    const total = parseInt((news.length / 10).toFixed(0));
+    if (total > 0) setPage(1);
+  }, []);
+  const pageNumArr: number[] = [];
+
+  for (let i: number = 1; i <= totalPages; i++) {
+    pageNumArr.push(i);
+  }
+  // Pagination
 
   if (loading)
     return (
@@ -530,74 +540,59 @@ const News = () => {
       </div>
     );
 
-  const item = temp[2];
-
   return (
-    <div className=" mx-auto my-8 flex flex-col items-center justify-center gap-6 lg:max-w-[70%]">
-      {news.map((item) => {
-        return (
-          <div className=" flex w-full gap-6 p-4  shadow shadow-gray-700 hover:shadow-md hover:shadow-gray-700">
-            <Tilt>
-              <img
-                className=" min-h-52 min-w-52 rounded-md  shadow shadow-gray-600 transition-all  duration-500 ease-in-out hover:scale-110"
-                src={item.imageurl}
-                alt={item.title}
-                height={200}
-                width={200}
-              />
-            </Tilt>
-            <div className=" flex flex-col gap-3">
-              <header className=" text-xl text-yellow-400 ">
-                {item.title}
-              </header>
-              <p className=" word-spacing text-sm text-gray-400">
-                {item.body?.slice(0, 350)}{" "}
-                {item?.body ? (item.body.length > 350 ? " . . ." : "") : ""}
-              </p>
-              <div className=" my-auto mb-0 flex flex-col gap-2">
-                <span className=" text-gray-400">
-                  <span className=" text-white">Related to :</span> {item.tags}
-                </span>
-                <NavLink
-                  to={item.url}
-                  className=" cursor-pointer text-sm hover:text-yellow-400"
-                >
-                  Read Full Article
-                </NavLink>
+    <>
+      <div className=" mx-auto  flex flex-col  items-center  justify-center gap-6  py-10 lg:max-w-[70%]">
+        {news.slice((page - 1) * 10, (page - 1) * 10 + 10).map((item) => {
+          return (
+            <div
+              key={item.id}
+              className=" flex w-full gap-6 p-4  shadow shadow-gray-700 hover:shadow-md hover:shadow-gray-700"
+            >
+              <Tilt>
+                <img
+                  className=" min-h-52 min-w-52 rounded-md  shadow shadow-gray-600 transition-all  duration-500 ease-in-out hover:scale-110"
+                  src={item?.imageurl}
+                  alt={item.title}
+                  height={200}
+                  width={200}
+                />
+              </Tilt>
+              <div className=" flex flex-col gap-3">
+                <header className=" text-xl text-yellow-400 ">
+                  {item.title}
+                </header>
+                <p className=" word-spacing text-sm text-gray-400">
+                  {item.body?.slice(0, 350)}{" "}
+                  {item?.body ? (item.body.length > 350 ? " . . ." : "") : ""}
+                </p>
+                <div className=" my-auto mb-0 flex flex-col gap-2">
+                  <span className=" text-gray-400">
+                    <span className=" text-white">Related to :</span>{" "}
+                    {item.tags}
+                  </span>
+                  <NavLink
+                    to={item.url}
+                    className=" cursor-pointer text-sm hover:text-yellow-400"
+                  >
+                    Read Full Article
+                  </NavLink>
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
-
-      {/* <div className=" flex w-full  gap-6 p-4 shadow shadow-gray-700"> */}
-      <img
-        className=" rounded-md  shadow shadow-gray-600"
-        src={item.imageurl}
-        alt={item.title}
-        height={200}
-        width={200}
-      />
-      <div className=" flex flex-col gap-3">
-        <header className=" text-xl text-yellow-400 ">{item.title}</header>
-        <p className=" word-spacing text-sm text-gray-400">
-          {item.body?.slice(0, 350)}{" "}
-          {item?.body ? (item.body.length > 350 ? " . . ." : "") : ""}
-        </p>
-        <div className=" my-auto mb-0 flex flex-col gap-2">
-          <span className=" text-gray-400">
-            <span className=" text-white">Related to :</span> {item.tags}
-          </span>
-          <NavLink
-            to={item.url}
-            className=" cursor-pointer text-sm hover:text-yellow-400"
-          >
-            Read Full Article
-          </NavLink>
+          );
+        })}
+        {/* Pagination */}
+        <div className="">
+          <PaginationComponent
+            page={page}
+            setPage={setPage}
+            pageNumArr={pageNumArr}
+            totalPages={totalPages}
+          />
         </div>
       </div>
-      {/* </div> */}
-    </div>
+    </>
   );
 };
 

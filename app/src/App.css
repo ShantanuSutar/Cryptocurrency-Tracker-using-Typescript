@@ -8,6 +8,8 @@
   box-sizing: border-box;
   font-family: "Montserrat", sans-serif;
 }
+
+/* Carousel */
 @keyframes scroll {
   0% {
     transform: translateX(0);

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CryptoContext } from "../../Context/CryptoContext";
 import { HistoricalChart } from "../../Config/api";
 import axios from "axios";

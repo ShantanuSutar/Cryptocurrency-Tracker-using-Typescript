@@ -1,18 +1,6 @@
-import React from "react";
-import { NavLink, useNavigation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-type Props = {
-  active: { home: boolean; news: boolean; about: boolean };
-  setActive: React.Dispatch<
-    React.SetStateAction<{
-      home: boolean;
-      news: boolean;
-      about: boolean;
-    }>
-  >;
-};
-
-const NavLinks = ({ active, setActive }: Props) => {
+const NavLinks = () => {
   const currentUrl = window.location.pathname;
   return (
     <div className=" flex gap-8">
