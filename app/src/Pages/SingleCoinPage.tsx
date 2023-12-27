@@ -65,7 +65,7 @@ const SingleCoinPage: React.FC = () => {
       if (id) {
         const { data } = await axios.get(SingleCoin(id));
         setCoin(data);
-        console.log(coin);
+        // console.log(coin);
       }
     } catch (error) {
       setError(true);

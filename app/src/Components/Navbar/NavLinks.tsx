@@ -14,7 +14,6 @@ type Props = {
 
 const NavLinks = ({ active, setActive }: Props) => {
   const currentUrl = window.location.pathname;
-  console.log(currentUrl);
   return (
     <div className=" flex gap-8">
       <NavLink
